@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <style>
     :root {
-      --primary-color: #28a745; /* Green for agriculture theme */
+      --primary-color: #28a745; 
       --primary-hover: #218838;
       --error-color: #d32f2f;
       --success-color: #28a745;
@@ -19,9 +19,9 @@
       --background-light: #f4f4f4;
       --text-color: #333;
       --panel-bg: #ffffff;
-      --coffee-color: #FFDD00; /* Màu vàng nổi bật cho nút coffee */
+      --coffee-color: #FFDD00; 
       --coffee-hover: #e6cb00;
-      --donate-color: #007bff; /* Màu xanh nổi bật cho nút donate */
+      --donate-color: #007bff; 
       --donate-hover: #0069d9;
     }
     body {
@@ -89,7 +89,6 @@
     #toast-notification.error { background-color: var(--error-color); }
     #toast-notification.info { background-color: var(--info-color); }
     
-    /* Cập nhật CSS cho Modal */
     .modal-overlay { 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
         background: rgba(0,0,0,0.6); z-index: 4000; 
@@ -110,7 +109,6 @@
     .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; }
     .leaflet-routing-container { display: none !important; }
 
-    /* CSS cho hộp thoại Donate */
     .donate-modal-content h2 { 
         color: var(--donate-color); 
         text-align: center; 
@@ -156,7 +154,6 @@
         border-radius: 4px;
     }
 
-
     #search-ui-container {
       position: absolute;
       top: 35px;
@@ -172,25 +169,16 @@
       gap: 5px;
     }
     #search-ui-container input { padding: 5px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; width: 250px; }
-    #search-ui-container button { padding: 5px 10px; font-size: 14px; background: var(--primary-color); color: white; border: none; border-radius: 4-px; cursor: pointer; }
+    #search-ui-container button { padding: 5px 10px; font-size: 14px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; }
     
     #play-pause-wrapper {
       display: flex;
-      align-items: center; /* Quan trọng để căn chỉnh các nút */
-      justify-content: flex-start; /* Giữ các nút chức năng chính ở bên trái */
+      align-items: center; 
+      justify-content: flex-start; 
       margin-top: 10px;
       gap: 20px; 
     }
     
-    /* Thiết lập lại khoảng cách giữa các nút chức năng chính (tùy chọn) */
-    #play-pause-wrapper > button, 
-    #play-pause-wrapper > button + button,
-    #play-pause-wrapper > button + a,
-    #play-pause-wrapper > a {
-        /* Đã được điều chỉnh bằng gap: 20px ở #play-pause-wrapper */
-    }
-
-    /* Đảm bảo style cho các nút */
     #play-pause-wrapper button, #play-pause-wrapper a { 
       background: rgba(255, 255, 255, 0.85);
       border: 1px solid rgba(0,0,0,0.2);
@@ -212,12 +200,10 @@
       background: white;
     }
 
-    /* ĐIỀU CHỈNH ẨN NÚT IN PDF */
     #print-btn {
         display: none !important;
     }
     
-    /* CSS cho nút Coffee */
     #buy-me-a-coffee-btn {
         background: var(--coffee-color) !important;
         color: #333 !important;
@@ -229,7 +215,6 @@
         color: #111 !important;
     }
     
-    /* CSS cho nút Donate mới */
     #donate-btn {
         background: var(--donate-color) !important;
         color: white !important;
@@ -242,13 +227,11 @@
         color: #fff !important;
     }
 
-
     .btn-active {
         background: var(--primary-color) !important;
         color: white !important;
         border-color: var(--primary-hover) !important;
     }
-    /* Điều chỉnh màu sắc cho Trợ lý Thiên tai */
     #agro-assistant-btn.btn-active {
         background: #f0c14b !important;
         color: #333 !important;
@@ -283,7 +266,6 @@
       fill: currentColor;
     }
     
-    /* ĐIỀU CHỈNH ẨN NÚT ĐỊNH VỊ */
     #locate-btn {
         display: none !important;
     }
@@ -307,14 +289,13 @@
     .legend-color { width: 20px; height: 10px; margin-right: 5px; border: 1px solid #ddd;}
     
     #social-media-container {
-      display: none; /* Hide the social media container */
+      display: none; 
     }
 
     #category-bar {
-      display: none; /* Hide the category bar */
+      display: none; 
     }
 
-    /* BỔ SUNG: CSS cho trang in */
     .print-a4-landscape {
         width: 297mm;
         height: 210mm;
@@ -379,7 +360,6 @@
         color: #555;
     }
 
-    /* Hide non-print elements */
     @media print {
         body > *:not(#print-container) {
             display: none;
@@ -389,7 +369,6 @@
         }
     }
 
-    /* CSS cho thanh thông báo thời tiết chạy ngang */
     #weather-ticker {
         position: absolute;
         top: 0;
@@ -578,8 +557,6 @@
       </div>
   </div>
 
-
-  
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -602,8 +579,8 @@
       googleApiKey: 'AIzaSyAuRWIozMKFbaB82wW1NqRvBGcF8_q_fSg',
       lastClickedLocationName: null,
       agroAssistantBtn: null,
-      lastClickedLat: null, // Bổ sung để lưu tọa độ
-      lastClickedLng: null  // Bổ sung để lưu tọa độ
+      lastClickedLat: null, 
+      lastClickedLng: null  
     };
 
     const apiKey = "AIzaSyAsB6BNltQ2DB5Z-AzSPrZ668-F50a1lV0";
@@ -645,12 +622,12 @@
       pdfCreated: { vi: 'Đã tạo file PDF thành công!' },
       showWeatherToPrint: { vi: 'Vui lòng hiển thị thông tin thời tiết trước khi in.' },
       zoomLimitExceeded: { vi: 'Đã đạt đến giới hạn zoom tối đa. Dữ liệu radar bị mờ.' },
-      agroAssistantTitle: { vi: 'Trợ lý Ứng phó Thiên tai' }, // Đã đổi tiêu đề
-      loadingAgroInfo: { vi: 'Đang tải thông tin ứng phó...' }, // Đã đổi thông báo
-      aiSummaryTitle: { vi: 'Ứng phó cùng Em Ếch Xinh' }, // Đã đổi tiêu đề
+      agroAssistantTitle: { vi: 'Trợ lý Ứng phó Thiên tai' }, 
+      loadingAgroInfo: { vi: 'Đang tải thông tin ứng phó...' }, 
+      aiSummaryTitle: { vi: 'Ứng phó cùng Em Ếch Xinh' }, 
       aiSummaryError: { vi: 'Không thể tạo tóm tắt.' },
       invalidLocationForAI: { vi: 'Không thể tạo tóm tắt thiên tai cho vị trí này. Vui lòng chọn một địa điểm cụ thể hơn như một tỉnh, huyện hoặc vùng nông nghiệp.' },
-      infoFor: {vi: 'Thông tin ứng phó cho'} // Đã đổi thông báo
+      infoFor: {vi: 'Thông tin ứng phó cho'} 
     };
 
     function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
@@ -721,11 +698,6 @@
       } else {
         if (appState.lastClickedLocationName && appState.lastClickedLat !== null) {
           hideWeatherInfoPanel();
-          if (appState.lastClickedLocationName.includes('(') && appState.lastClickedLocationName.includes(')')) {
-            // Cho phép chạy trợ lý ngay cả khi là tọa độ (để lấy thông tin thời tiết)
-            // showToast('invalidLocationForAI', 'error'); 
-            // return;
-          }
           await getDisasterResponseSummaryWithWeather(appState.lastClickedLat, appState.lastClickedLng, appState.lastClickedLocationName);
           appState.agroAssistantBtn.classList.add('btn-active');
         } else {
@@ -1250,12 +1222,7 @@
                 const groundOverlays = dom.getElementsByTagName('GroundOverlay');
                 const hasGroundOverlays = groundOverlays.length > 0;
                 
-                let layerGroup;
-                if (hasGroundOverlays) {
-                    layerGroup = L.layerGroup();
-                } else {
-                    layerGroup = L.markerClusterGroup();
-                }
+                let layerGroup = hasGroundOverlays ? L.layerGroup() : L.markerClusterGroup();
 
                 for (const overlay of groundOverlays) {
                     const href = overlay.getElementsByTagName('href')[0]?.textContent;
@@ -1321,31 +1288,18 @@
                     },
                     pointToLayer: function (feature, latlng) {
                         let options = {};
-                        let iconUrl = null;
-                        
                         if (feature.properties.styleUrl) {
                             let styleUrl = feature.properties.styleUrl;
-                            if (styleMaps[styleUrl]) {
-                                styleUrl = styleMaps[styleUrl];
-                            }
-                            if (iconStyles[styleUrl]) {
-                                options.icon = iconStyles[styleUrl];
-                            }
+                            if (styleMaps[styleUrl]) styleUrl = styleMaps[styleUrl];
+                            if (iconStyles[styleUrl]) options.icon = iconStyles[styleUrl];
                         }
-                        
-                        if (!options.icon) {
-                            options.icon = getCustomIcon('default');
-                        }
-                        
+                        if (!options.icon) options.icon = getCustomIcon('default');
                         return L.marker(latlng, options);
                     },
                     onEachFeature: function (feature, layer) {
                         if (layer instanceof L.Marker) {
-                            if (!hasGroundOverlays) {
-                                layerGroup.addLayer(layer);
-                            } else {
-                                layer.addTo(layerGroup);
-                            }
+                            if (!hasGroundOverlays) layerGroup.addLayer(layer);
+                            else layer.addTo(layerGroup);
                         } else {
                             layer.addTo(layerGroup);
                         }
@@ -1362,11 +1316,8 @@
                                 allCoordinates.push(...latlngs);
                             } else {
                                 latlngs.forEach(ll => {
-                                    if (Array.isArray(ll) && ll.every(c => c.lat)) {
-                                        allCoordinates.push(...ll);
-                                    } else {
-                                        allCoordinates.push(ll);
-                                    }
+                                    if (Array.isArray(ll) && ll.every(c => c.lat)) allCoordinates.push(...ll);
+                                    else allCoordinates.push(ll);
                                 });
                             }
                         }
@@ -1374,16 +1325,11 @@
                 });
                 
                 layerGroup.addTo(appState.map);
-                appState.kmzIndividualLayers.push({
-                    name: result.name,
-                    layer: layerGroup
-                });
+                appState.kmzIndividualLayers.push({ name: result.name, layer: layerGroup });
                 allBounds.extend(layerGroup.getBounds());
             });
 
-            if (allBounds.isValid()) {
-                appState.map.fitBounds(allBounds);
-            }
+            if (allBounds.isValid()) appState.map.fitBounds(allBounds);
             if (allCoordinates.length > 0) {
                 const centerLat = allCoordinates.reduce((sum, c) => sum + c.lat, 0) / allCoordinates.length;
                 const centerLon = allCoordinates.reduce((sum, c) => sum + c.lng, 0) / allCoordinates.length;
@@ -1391,11 +1337,7 @@
             }
 
             updateKmzLayerControls();
-            
-            if (appState.rainLayer) {
-                appState.rainLayer.bringToFront();
-            }
-
+            if (appState.rainLayer) appState.rainLayer.bringToFront();
             toggleLoading(false);
         }).catch(err => {
             alert("Lỗi khi xử lý tệp: " + err.message);
@@ -1409,9 +1351,7 @@
         document.getElementById('play-pause-btn').innerHTML = '▶️';
     }
     
-    // Hàm mới để lấy dữ liệu OpenWeather và ước tính mưa Rainviewer (Đã điều chỉnh)
     async function getWeatherDataForSummary(lat, lng) {
-        // Lấy dữ liệu OpenWeather hiện tại (và forecast 5 ngày/3 giờ)
         let forecastData = appState.lastWeatherData ? appState.lastWeatherData.weather : null;
         let currentWeatherSummary = "Không có dữ liệu thời tiết hiện tại.";
         let rainPrediction30min = "Không có dữ liệu dự báo mưa trong 30 phút. Vui lòng kiểm tra radar mưa.";
@@ -1433,33 +1373,27 @@
             const listTimeStamps = list.map(item => item.dt * 1000);
             const now = Date.now();
 
-            // 1. Dữ liệu Hiện tại (Cần thiết cho trường hợp không click map)
             const temp = current.main.temp.toFixed(1);
             const desc = current.weather[0].description;
             const wind = current.wind.speed.toFixed(1);
             currentWeatherSummary = `Nhiệt độ hiện tại: ${temp}°C, Mô tả: ${desc}. Gió: ${wind} m/s. Độ ẩm: ${current.main.humidity}%.`;
 
-            // 2. Dự báo 3h
             const target3h = now + 3 * 3600 * 1000;
             const index3h = listTimeStamps.findIndex(ts => ts >= target3h - (1.5 * 3600 * 1000) && ts <= target3h + (1.5 * 3600 * 1000));
-            
             if (index3h !== -1) {
                 const data3h = list[index3h];
                 const date3h = new Date(data3h.dt * 1000).toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'});
                 forecast3hSummary = `Dự báo (${date3h}): ${data3h.main.temp.toFixed(1)}°C, ${data3h.weather[0].description}. Khả năng mưa: ${ (data3h.pop * 100).toFixed(0) }%`;
             }
 
-            // 3. Dự báo 6h
             const target6h = now + 6 * 3600 * 1000;
             const index6h = listTimeStamps.findIndex(ts => ts >= target6h - (1.5 * 3600 * 1000) && ts <= target6h + (1.5 * 3600 * 1000));
-            
             if (index6h !== -1) {
                 const data6h = list[index6h];
                 const date6h = new Date(data6h.dt * 1000).toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'});
                 forecast6hSummary = `Dự báo (${date6h}): ${data6h.main.temp.toFixed(1)}°C, ${data6h.weather[0].description}. Khả năng mưa: ${ (data6h.pop * 100).toFixed(0) }%`;
             }
 
-            // 4. Dự báo Rainviewer 30 phút (Giữ nguyên logic cũ, tập trung vào Nowcast)
             if (appState.lastRainData && appState.lastRainData.radar && appState.lastRainData.radar.nowcast) {
                 const nowcastTimelines = appState.lastRainData.radar.nowcast;
                 const nowcast30Min = nowcastTimelines.find(t => {
@@ -1469,7 +1403,6 @@
                 
                 if (nowcast30Min) {
                     const timeStr = new Date(nowcast30Min.time * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-                    // Nhận định dựa trên radar và trạng thái hiện tại
                     if (desc.includes('mưa') || desc.includes('rào')) {
                         rainPrediction30min = `Mưa hiện tại có thể tiếp diễn. Radar dự báo có diễn biến mưa trong khoảng 30 phút tới (mốc ${timeStr}). Nguy cơ gia tăng ngập úng hoặc sét.`;
                     } else {
@@ -1485,15 +1418,10 @@
             console.error("Lỗi lấy dữ liệu thời tiết cho tóm tắt:", e);
         }
 
-        return { 
-            currentWeatherSummary, 
-            rainPrediction30min,
-            forecast3hSummary,
-            forecast6hSummary
-        };
+        return { currentWeatherSummary, rainPrediction30min, forecast3hSummary, forecast6hSummary };
     }
 
-    // START - GEMINI API INTEGRATION for Disaster Response Assistant (formerly getAgricultureSummary)
+    /* ĐÃ CẬP NHẬT ENDPOINT SANG GEMINI-2.5-FLASH ỔN ĐỊNH CHÍNH THỨC */
     async function getDisasterResponseSummaryWithWeather(lat, lng, locationName) {
       const agroPanel = document.getElementById('agro-info-panel');
       
@@ -1502,12 +1430,10 @@
       toggleLoading(true);
 
       const { currentWeatherSummary, rainPrediction30min, forecast3hSummary, forecast6hSummary } = await getWeatherDataForSummary(lat, lng);
-      
       const locale = appState.currentLanguage === 'vi' ? 'vi-VN' : 'en-US';
       const currentTime = new Date().toLocaleString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
       try {
-        // PROMPT MỚI ĐƯỢC CẤU TRÚC ĐỂ SỬ DỤNG DỮ LIỆU THỜI TIẾT THỰC TẾ
         const promptText = `
 PROMPT: TÌNH HUỐNG VÀ GIẢI PHÁP ỨNG PHÓ THIÊN TAI CỤ THỂ THEO THỜI TIẾT
 
@@ -1536,22 +1462,16 @@ LƯU Ý QUAN TRỌNG: Ngôn ngữ phải rõ ràng, khẩn trương, dễ hiểu
 Độ dài tối đa 79 từ.
         `;
 
-      
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
+        // ĐỐI CHIẾU THAY THẾ: Chuyển endpoint sang mô hình chính thức ổn định gemini-2.5-flash
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{
-              parts: [{
-                text: promptText
-              }]
-            }],
+            contents: [{ parts: [{ text: promptText }] }],
             tools: [{ "google_search": {} }],
           }),
         });
-        if (!response.ok) {
-            throw new Error('API response was not OK.');
-        }
+        if (!response.ok) throw new Error('API response was not OK.');
 
         const result = await response.json();
         const summary = result?.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -1564,19 +1484,13 @@ LƯU Ý QUAN TRỌNG: Ngôn ngữ phải rõ ràng, khẩn trương, dễ hiểu
       } catch (error) {
         console.error('Gemini API Error:', error);
         let errorMessage = translations.aiSummaryError[appState.currentLanguage];
-        if (error.message.includes('API response was not OK')) {
-            errorMessage = 'Lỗi kết nối với API. Vui lòng thử lại sau.';
-        } else if (error instanceof SyntaxError) {
-            errorMessage = 'Lỗi dữ liệu từ API. Vui lòng thử lại.';
-        }
+        if (error.message.includes('API response was not OK')) errorMessage = 'Lỗi kết nối với API. Vui lòng thử lại sau.';
         agroPanel.innerHTML = `<h3>${translations.aiSummaryTitle[appState.currentLanguage]}</h3><p style="color:red;">${errorMessage}</p>`;
       } finally {
         toggleLoading(false);
       }
     }
-    // END - GEMINI API INTEGRATION
 
-    // START - Ticker functions from previous file
     const LOCATIONS = [
       { name: 'Hà Nội', lat: 21.0285, lon: 105.8542 },
       { name: 'Hải Phòng', lat: 20.8524, lon: 106.6881 },
@@ -1632,15 +1546,11 @@ LƯU Ý QUAN TRỌNG: Ngôn ngữ phải rõ ràng, khẩn trương, dễ hiểu
             let minDistance = Infinity;
             searchLocations.forEach(searchLoc => {
                 const distance = calculateDistance(searchLoc.lat, searchLoc.lon, location.lat, location.lon);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                }
+                if (distance < minDistance) minDistance = distance;
             });
             return { ...location, distance: minDistance };
         });
-
-        const sortedLocations = allLocationsWithDistance.sort((a, b) => a.distance - b.distance);
-        return sortedLocations.slice(0, count);
+        return allLocationsWithDistance.sort((a, b) => a.distance - b.distance).slice(0, count);
     }
     
     async function fetchWeatherData(location) {
@@ -1668,7 +1578,6 @@ LƯU Ý QUAN TRỌNG: Ngôn ngữ phải rõ ràng, khẩn trương, dễ hiểu
       let tickerHTML = '';
       
       const locationsToFetch = getClosestLocations(referenceLocations, 10);
-      
       const promises = locationsToFetch.map(location => fetchWeatherData(location));
       const results = await Promise.all(promises);
 
@@ -1676,9 +1585,7 @@ LƯU Ý QUAN TRỌNG: Ngôn ngữ phải rõ ràng, khẩn trương, dễ hiểu
         if (data) {
           tickerHTML += `
             <span style="margin: 0 20px;">
-              <strong>${data.name}</strong>: 
-              ${data.currentTemp}°C, ${data.currentDesc}. 
-              Gió: ${data.windSpeed} m/s.
+              <strong>${data.name}</strong>: ${data.currentTemp}°C, ${data.currentDesc}. Gió: ${data.windSpeed} m/s.
             </span>
           `;
         }
@@ -1694,11 +1601,10 @@ LƯU Ý QUAN TRỌNG: Ngôn ngữ phải rõ ràng, khẩn trương, dễ hiểu
         tickerContent.innerHTML = 'Không thể tải thông tin thời tiết.';
       }
     }
-    // END - Ticker functions from previous file
 
     document.addEventListener('DOMContentLoaded', () => {
         appState.agroAssistantBtn = document.getElementById('agro-assistant-btn');
-        appState.agroAssistantBtn.style.display = 'none'; // Ẩn nút trợ lý mặc định
+        appState.agroAssistantBtn.style.display = 'none'; 
 
         initializeMap();
         updateUIForLanguage();
@@ -1713,13 +1619,7 @@ LƯU Ý QUAN TRỌNG: Ngôn ngữ phải rõ ràng, khẩn trương, dễ hiểu
         document.getElementById('legend-btn').addEventListener('click', toggleLegend);
         document.getElementById('legend-btn').setAttribute('data-i18n-title-key', 'legendToggleTitle');
 
-        // Nút In đã bị ẩn bằng CSS, nhưng giữ lại event listener (mặc dù sẽ không được kích hoạt qua UI)
-        // document.getElementById('print-btn').addEventListener('click', printWeatherInfoToPDF);
         document.getElementById('print-btn').setAttribute('data-i18n-title-key', 'printTitle');
-        
-        // Nút Định vị đã bị ẩn bằng CSS, nhưng giữ lại event listener (mặc dù sẽ không được kích hoạt qua UI)
-        // const locateBtn = document.getElementById('locate-btn');
-        // locateBtn.addEventListener('click', (e) => { e.preventDefault(); debounce(locateUser, 300)(); });
         document.getElementById('locate-btn').setAttribute('data-i18n-title-key', 'locateTitle');
 
         document.getElementById('upload-kmz-btn').addEventListener('click', (e) => {
@@ -1747,7 +1647,6 @@ LƯU Ý QUAN TRỌNG: Ngôn ngữ phải rõ ràng, khẩn trương, dễ hiểu
         
         document.getElementById('agro-assistant-btn').addEventListener('click', toggleAgroInfo);
         
-        // Kích hoạt hộp thoại Donate
         document.getElementById('donate-btn').addEventListener('click', (e) => {
             e.preventDefault();
             document.getElementById('donate-modal').classList.add('visible');
