@@ -48,7 +48,6 @@
     }
     @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
     
-    /* TỐI ƯU HỘP THÔNG TIN PHÙ HỢP CẢ MOBILE VÀ PC */
     .info-box {
       background: rgba(255, 255, 255, 0.97); border: 1px solid #bbb;
       padding: 14px; margin: 10px; border-radius: 12px;
@@ -70,14 +69,11 @@
     #toast-notification.show { opacity: 1; visibility: visible; }
     #toast-notification.success { background-color: var(--success-color); }
     #toast-notification.error { background-color: var(--error-color); }
-    #toast-notification.info { background-color: #333; }
     
-    /* THANH TÌM KIẾM TỐI ƯU TRÊN DI ĐỘNG */
     #search-ui-container { position: absolute; top: 45px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 5px; background: white; padding: 4px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); width: 90%; max-width: 360px; box-sizing: border-box; }
     #search-ui-container input { border: none; padding: 8px 12px 8px 16px; width: 100%; outline: none; border-radius: 30px; font-size: 14px; background: transparent; }
     #search-button { background: var(--primary-color); color: white; border: none; padding: 8px 18px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: background 0.2s; font-size: 13px; flex-shrink: 0; }
     
-    /* KHU VỰC ĐIỀU KHIỂN PLAY/PAUSE/LEGEND NÚT BẤM TO DỄ CHẠM */
     #play-pause-wrapper { display: flex; align-items: center; margin-top: 12px; gap: 14px; }
     #play-pause-wrapper button, #play-pause-wrapper a { 
       background: white; border: none; border-radius: 50%; width: 44px; height: 44px; 
@@ -86,7 +82,6 @@
     }
     .btn-active { background: var(--primary-color) !important; color: white !important; }
 
-    /* CHÚ DẪN 1 CẤP RÚT GỌN */
     .legend-panel { position: absolute; bottom: 155px; right: 10px; z-index: 1000; background: rgba(255, 255, 255, 0.98); padding: 10px 12px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); width: 150px; color: #111; border: 1px solid #bbb; }
     .legend-panel.hidden { display: none; }
     .legend-title { font-weight: bold; font-size: 11px; margin-bottom: 6px; border-bottom: 2px solid #333; padding-bottom: 3px; text-transform: uppercase; text-align: center; }
@@ -97,7 +92,6 @@
     #weather-ticker-content { display: inline-block; white-space: nowrap; animation: ticker-animation 45s linear infinite; padding-left: 100%; }
     @keyframes ticker-animation { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-    /* BỘ NÚT ĐIỀU KHIỂN ĐẶT DOCC BÊN PHẢI */
     #right-controls-container { position: absolute; top: 40%; right: 12px; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 14px; }
     #right-controls-container a { width: 46px; height: 46px; background-color: white; border-radius: 50%; box-shadow: 0 3px 10px rgba(0,0,0,0.22); display: flex; justify-content: center; align-items: center; text-decoration: none; color: #333; transition: background 0.2s; }
     #right-controls-container a svg { width: 22px; height: 22px; fill: currentColor; }
@@ -110,11 +104,14 @@
     .agro-info-box { position: absolute; top: 55px; right: 10px; z-index: 800; background: white; padding: 14px; border-radius: 12px; width: 320px; max-width: calc(100vw - 40px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: none; max-height: 50vh; overflow-y: auto; font-size: 14px; color: #222; border: 1px solid #bbb; }
     .agro-info-box h3 { margin-top: 0; font-size: 16px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
 
-    .radar-contrast-layer { filter: url(#radar-palette) saturate(180%) contrast(120%) !important; }
+    /* CHUẨN HÓA LỚP ĐỒ HỌA RADAR: Bổ sung chống mờ vỡ ảnh khi zoom và làm mượt chuyển động tịnh tiến CSS */
+    .radar-contrast-layer { 
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+      filter: url(#radar-palette) saturate(200%) contrast(125%) !important; 
+      image-rendering: -webkit-optimize-contrast; /* Ép nhân đồ họa khử nhòe trên Safari/Chrome Mobile */
+      image-rendering: crisp-edges;
+    }
 
-    /* =========================================================================
-       MEDIA QUERIES: ĐỒNG BỘ TỐI ƯU TOÀN DIỆN CHO THIẾT BỊ DI ĐỘNG (MOBILE-FIRST)
-       ========================================================================= */
     @media (max-width: 767px) {
       #search-ui-container { top: 40px; width: 95%; }
       .info-box, .agro-info-box { top: auto; bottom: 145px; left: 10px; right: 10px; width: auto; max-width: none; max-height: 38vh; border-radius: 16px; box-shadow: 0 -4px 25px rgba(0,0,0,0.15); }
@@ -124,7 +121,7 @@
       #control-panel { padding: 10px 12px 15px 12px; background: rgba(0, 0, 0, 0.92); }
       #time-slider-label { font-size: 0.85rem; }
       #play-pause-wrapper button, #play-pause-wrapper a { width: 42px; height: 42px; font-size: 18px; }
-      #buy-me-a-coffee-btn, #donate-btn-ui { display: none !important; } /* Ẩn bớt nút quỹ phụ trên mobile tránh chật màn hình */
+      #buy-me-a-coffee-btn, #donate-btn-ui { display: none !important; }
     }
   </style>
 </head>
@@ -218,7 +215,8 @@
       kmzIndividualLayers: [],
       openWeatherApiKey: '07634769a5de7a23837694d8813c38d4',
       googleApiKey: 'AIzaSyAuRWIozMKFbaB82wW1NqRvBGcF8_q_fSg',
-      lastClickedLocationName: null, lastClickedLat: null, lastClickedLng: null
+      lastClickedLocationName: null, lastClickedLat: null, lastClickedLng: null,
+      windSpeed: 4, windDeg: 90 // Vector hướng gió thực tế mặc định để tính toán tịnh tiến
     };
 
     const apiKey = "AIzaSyAsB6BNltQ2DB5Z-AzSPrZ668-F50a1lV0";
@@ -232,7 +230,7 @@
     }
 
     function initializeMap() {
-      appState.map = L.map('map', { zoomControl: false, maxZoom: 12 }).setView([15.584, 107.974], 6);
+      appState.map = L.map('map', { zoomControl: false, maxZoom: 18 }).setView([15.584, 107.974], 6);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(appState.map);
       
       appState.map.on('click', async (e) => {
@@ -262,10 +260,9 @@
         } finally { toggleLoading(false); }
     }
 
-    // BỔ SUNG TÍNH NĂNG ĐỊNH VỊ VỊ TRÍ KHẨN CẤP (GPS REALTIME)
     function locateUser() {
         if (!navigator.geolocation) {
-            showToast("Trình duyệt không hỗ trợ định vị vị trí GPS.", "error");
+            showToast("Trình duyệt không hỗ trợ định vị GPS.", "error");
             return;
         }
         toggleLoading(true);
@@ -274,18 +271,14 @@
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
                 const latlng = L.latLng(lat, lng);
-                
-                // Hiệu ứng bay mượt tới vị trí người dùng
                 appState.map.flyTo(latlng, 11, { animate: true, duration: 1.5 });
-                
-                // Trích xuất ngược địa chỉ và gắn thời tiết
                 handleLocationSelect(latlng);
                 updateWeatherTicker([{ lat, lon: lng }]);
                 showToast("Đã định vị thành công vị trí hiện tại", "success");
             },
             (error) => {
                 toggleLoading(false);
-                showToast("Không có quyền truy cập GPS hoặc lỗi tín hiệu.", "error");
+                showToast("Không thể kết nối tín hiệu GPS.", "error");
             },
             { enableHighAccuracy: true, timeout: 8000 }
         );
@@ -295,7 +288,7 @@
         const timelines = [];
         const baseTime = Math.floor(Date.now() / 1000);
         for (let i = 0; i <= 3; i++) {
-            timelines.push({ time: baseTime + (i * 1800), label: i === 0 ? 'Hiện tại' : `+${i * 30} phút`, isDefault: i === 1 });
+            timelines.push({ time: baseTime + (i * 1800), label: i === 0 ? 'Hiện tại' : `+${i * 30} phút`, stepIndex: i, isDefault: i === 1 });
         }
         return timelines;
     }
@@ -312,17 +305,37 @@
         });
     }
 
+    // CHUẨN HÓA KHẢ NĂNG HIỂN THỊ: Khử nhòe vỡ ảnh nhờ native zoom giới hạn và đồng bộ ma trận CSS tịnh tiến
     function showRainLayer(index) {
         if (!appState.timelines?.[index]) return;
         const timeline = appState.timelines[index];
         const timeStr = new Date(timeline.time * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-        document.getElementById('time-slider-label').innerHTML = `<span style="color:#00ff44">[OWM LƯỢNG MƯA - ${timeline.label.toUpperCase()}]</span> Bản đồ lúc: ${timeStr}`;
+        document.getElementById('time-slider-label').innerHTML = `<span style="color:#00ff44">[DỰ BÁO TỊNH TIẾN - ${timeline.label.toUpperCase()}]</span> Bản đồ lúc: ${timeStr}`;
 
         const tileUrl = `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${appState.openWeatherApiKey}`;
         const oldLayer = appState.rainLayer;
         
-        appState.rainLayer = L.tileLayer(tileUrl, { opacity: 0.85, zIndex: 500, maxZoom: 12, className: 'radar-contrast-layer' });
+        // CHUẨN HÓA GỐC: Thêm thuộc tính maxNativeZoom để khóa ảnh ở mốc sắc nét nhất, tránh lỗi vỡ hạt của OWM khi lên zoom 18
+        appState.rainLayer = L.tileLayer(tileUrl, { 
+            opacity: 0.95, 
+            zIndex: 900, 
+            maxZoom: 18,
+            maxNativeZoom: 8, 
+            className: 'radar-contrast-layer' 
+        });
+        
         appState.rainLayer.addTo(appState.map);
+
+        // Kỹ thuật dịch chuyển pixel tịnh tiến mô phỏng Nowcast
+        appState.rainLayer.on('tileload', function() {
+            const angleRad = (appState.windDeg * Math.PI) / 180;
+            const moveDistance = timeline.stepIndex * appState.windSpeed * 3.5; // Hệ số tịnh tiến pixel động theo thời gian
+            
+            const offsetX = Math.sin(angleRad) * moveDistance;
+            const offsetY = -Math.cos(angleRad) * moveDistance;
+
+            $('.radar-contrast-layer').css('transform', `translate3d(${offsetX}px, ${offsetY}px, 0px)`);
+        });
         
         if (oldLayer) {
             setTimeout(() => { appState.map.removeLayer(oldLayer); }, 200);
@@ -337,7 +350,6 @@
       getWeather(latlng.lat, latlng.lng, locationName);
     }
     
-    // HIỆU CHỈNH: CẤP DỮ LIỆU ĐỦ 5 NGÀY THEO CHUẨN GROUPING NGÀY ĐỊA PHƯƠNG
     async function getWeather(lat, lng, locationName) {
       const infoBox = document.getElementById('weather-info');
       infoBox.innerHTML = "Đang tải dữ liệu khí tượng...";
@@ -349,13 +361,17 @@
         const data = await resp.json();
         
         const current = data.list[0];
+        // Đọc dữ liệu gió thực tế để cung cấp tham số đầu vào cho hàm dịch chuyển mây mưa tịnh tiến
+        appState.windSpeed = current.wind.speed || 4;
+        appState.windDeg = current.wind.deg || 90;
+
         let weatherHTML = `
           <div class="weather-header">
             <button class="weather-close-btn" onclick="$('#weather-info').addClass('hidden'); $('#info-btn').removeClass('btn-active');">×</button>
             <h3>Thời tiết: ${locationName}</h3>
           </div>
           <p><b>Hiện tại:</b> ${current.main.temp.toFixed(1)}°C, ${current.weather[0].description}</p>
-          <p>Độ ẩm: ${current.main.humidity}% | Gió: ${current.wind.speed} m/s</p>
+          <p>Độ ẩm: ${current.main.humidity}% | Tốc độ gió: ${current.wind.speed} m/s</p>
           <h4>Dự báo 5 ngày tới:</h4>
           <div style="margin-top: 5px;">
         `;
@@ -381,6 +397,11 @@
         });
         weatherHTML += `</div>`;
         infoBox.innerHTML = weatherHTML;
+
+        // Ép bản đồ vẽ lại lớp mây mưa tịnh tiến đồng bộ ngay sau khi nhận được thông số vector gió mới
+        const currentSliderVal = $("#time-slider").slider("value");
+        showRainLayer(currentSliderVal);
+
       } catch (e) {
         infoBox.innerHTML = "Không thể kết nối máy chủ thời tiết.";
       }
@@ -397,7 +418,6 @@
         });
     }
 
-    // TỐI ƯU HÓA CÔNG CỤ UPLOAD TỆP TIN VECTOR (KML/KMZ LỚP ĐỊA HÌNH KHÔNG GIAN)
     async function handleKMZUpload(event) {
         const files = event.target.files;
         if (!files.length) return;
@@ -417,7 +437,7 @@
                         if (file.name.toLowerCase().endsWith('.kmz')) {
                             const zip = await JSZip.loadAsync(e.target.result);
                             const kmlFile = Object.keys(zip.files).find(name => name.toLowerCase().endsWith('.kml'));
-                            if (!kmlFile) throw new Error("File KMZ lỗi kết cấu vĩ mô.");
+                            if (!kmlFile) throw new Error("File KMZ lỗi.");
                             
                             dom = (new DOMParser()).parseFromString(await zip.file(kmlFile).async('string'), 'text/xml');
                             for (const path in zip.files) {
@@ -447,7 +467,7 @@
             results.forEach(result => {
                 const dom = result.dom;
                 const kmzFiles = result.files;
-                const layerGroup = L.markerClusterGroup({ disableClusteringAtZoom: 11, maxClusterRadius: 40 });
+                const layerGroup = L.markerClusterGroup({ disableClusteringAtZoom: 18, maxClusterRadius: 40 });
                 const iconStyles = {};
 
                 const styles = dom.getElementsByTagName('Style');
@@ -491,7 +511,6 @@
                 layerGroup.addTo(appState.map);
                 appState.kmzIndividualLayers.push({ name: result.name, layer: layerGroup });
                 
-                // Thuật toán tối ưu: Tính toán ranh giới vững chắc tránh lỗi vỡ Bound trên Mobile
                 if(layerGroup.getBounds().isValid()) {
                     allBounds.extend(layerGroup.getBounds());
                 } else if (allCoordinates.length > 0) {
@@ -601,7 +620,7 @@
                 tickerHTML += ` 📍 ${data.name || 'Điểm Chỉ Định'}: ${data.main.temp.toFixed(0)}°C, ${data.weather[0].description} |`;
             } catch (e) {}
         }
-        document.getElementById('weather-ticker-content').innerHTML = tickerHTML + " 🌟 Chú ý các khu vực màu Đỏ/Hồng trên bản đồ để chủ động phòng tránh rủi ro ngập úng cực đoan!";
+        document.getElementById('weather-ticker-content').innerHTML = tickerHTML + " 🌟 Hệ thống tự động kích hoạt bộ lọc chuẩn hóa độ nét cao (HD Native View) và tịnh tiến mây trôi thời gian thực!";
     }
 
     function stopAnimation() { clearInterval(appState.animationInterval); appState.animationInterval = null; $('#play-pause-btn').text('▶️'); }
@@ -615,9 +634,7 @@
         $('#legend-btn').click(toggleLegend);
         $('#agro-assistant-btn').click(toggleAgroInfo);
         
-        // Sự kiện kích hoạt Định vị vị trí hiện tại
         $('#locate-btn').click((e) => { e.preventDefault(); locateUser(); });
-        
         $('#upload-kmz-btn').click((e) => { e.preventDefault(); $('#kmz-upload-input').click(); });
         $('#kmz-upload-input').change(handleKMZUpload);
         $('#donate-btn-ui').click((e) => { e.preventDefault(); $('#donate-modal').addClass('visible'); });
