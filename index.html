@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Túi thời tiết thông minh</title>
+  <title>Túi thời tiết thông minh & Trích xuất tọa độ ảnh</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     :root {
-      --primary-color: #28a745;
+      --primary: #28a745;
       --primary-hover: #218838;
       --error-color: #d32f2f;
       --success-color: #28a745;
@@ -24,6 +25,7 @@
       --coffee-hover: #e6cb00;
       --donate-color: #007bff;
       --donate-hover: #0069d9;
+      --blue-maps: #1a73e8;
     }
     body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; overflow: hidden; -webkit-user-select: none; }
     #map-container { width: 100vw; height: 100vh; position: relative; }
@@ -44,8 +46,8 @@
     
     #loading-spinner { 
       display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-      border: 6px solid #f3f3f3; border-top: 6px solid var(--primary-color); border-radius: 50%; 
-      width: 38px; height: 38px; animation: spin 1s linear infinite; z-index: 4500; 
+      border: 6px solid #f3f3f3; border-top: 6px solid var(--primary); border-radius: 50%; 
+      width: 38px; height: 38px; animation: spin 1s linear infinite; z-index: 6000; 
     }
     @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
     
@@ -66,14 +68,14 @@
     .info-box .forecast-time { font-weight: bold; color: #555; }
     .info-box.hidden { display: none !important; }
     
-    #toast-notification { position: fixed; bottom: 150px; left: 50%; transform: translateX(-50%); z-index: 5000; padding: 12px 24px; border-radius: 30px; color: white; opacity: 0; visibility: hidden; transition: 0.3s; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.25); font-size: 13px; white-space: nowrap; }
+    #toast-notification { position: fixed; bottom: 150px; left: 50%; transform: translateX(-50%); z-index: 6500; padding: 12px 24px; border-radius: 30px; color: white; opacity: 0; visibility: hidden; transition: 0.3s; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.25); font-size: 13px; white-space: nowrap; }
     #toast-notification.show { opacity: 1; visibility: visible; }
     #toast-notification.success { background-color: var(--success-color); }
     #toast-notification.error { background-color: var(--error-color); }
     
     #search-ui-container { position: absolute; top: 45px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 5px; background: white; padding: 4px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); width: 90%; max-width: 360px; box-sizing: border-box; }
     #search-ui-container input { border: none; padding: 8px 12px 8px 16px; width: 100%; outline: none; border-radius: 30px; font-size: 14px; background: transparent; }
-    #search-button { background: var(--primary-color); color: white; border: none; padding: 8px 18px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: background 0.2s; font-size: 13px; flex-shrink: 0; }
+    #search-button { background: var(--primary); color: white; border: none; padding: 8px 18px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: background 0.2s; font-size: 13px; flex-shrink: 0; }
     
     #play-pause-wrapper { display: flex; align-items: center; margin-top: 12px; gap: 14px; }
     #play-pause-wrapper button, #play-pause-wrapper a { 
@@ -81,7 +83,7 @@
       cursor: pointer; display: flex; align-items: center; justify-content: center; 
       box-shadow: 0 3px 8px rgba(0,0,0,0.2); text-decoration: none; font-size: 20px; transition: all 0.2s;
     }
-    .btn-active { background: var(--primary-color) !important; color: white !important; }
+    .btn-active { background: var(--primary) !important; color: white !important; }
 
     .legend-panel { position: absolute; bottom: 155px; right: 10px; z-index: 1000; background: rgba(255, 255, 255, 0.98); padding: 10px 12px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); width: 150px; color: #111; border: 1px solid #bbb; }
     .legend-panel.hidden { display: none; }
@@ -93,34 +95,55 @@
     #weather-ticker-content { display: inline-block; white-space: nowrap; animation: ticker-animation 45s linear infinite; padding-left: 100%; }
     @keyframes ticker-animation { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-    #right-controls-container { position: absolute; top: 40%; right: 12px; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 14px; }
+    #right-controls-container { position: absolute; top: 45%; right: 12px; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 12px; }
     #right-controls-container a, #right-controls-container button { width: 46px; height: 46px; background-color: white; border-radius: 50%; box-shadow: 0 3px 10px rgba(0,0,0,0.22); display: flex; justify-content: center; align-items: center; text-decoration: none; color: #333; transition: background 0.2s; border: none; cursor: pointer; padding: 0; }
     #right-controls-container a svg, #right-controls-container button svg { width: 22px; height: 22px; fill: currentColor; }
 
+    /* Modals & Popups Layout */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 5500; display: none; justify-content: center; align-items: center; }
     .modal-overlay.visible { display: flex; }
-    .modal-content { background: white; padding: 20px; border-radius: 12px; max-width: 380px; width: 88%; box-shadow: 0 5px 20px rgba(0,0,0,0.3); position: relative; font-size: 14px; color: var(--text-color); }
+    .modal-content { background: white; padding: 20px; border-radius: 12px; max-width: 420px; width: 88%; box-shadow: 0 5px 20px rgba(0,0,0,0.3); position: relative; font-size: 14px; color: var(--text-color); max-height: 85vh; overflow-y: auto; }
     .modal-close-btn { position: absolute; top: 10px; right: 12px; font-size: 24px; background: none; border: none; cursor: pointer; color: #aaa; }
-    .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; }
+    .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
     
     .agro-info-box { position: absolute; top: 55px; right: 10px; z-index: 800; background: white; padding: 14px; border-radius: 12px; width: 320px; max-width: calc(100vw - 40px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: none; max-height: 50vh; overflow-y: auto; font-size: 14px; color: #222; border: 1px solid #bbb; }
     .agro-info-box h3 { margin-top: 0; font-size: 16px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
 
-    /* Custom Routing Styles */
-    .leaflet-routing-container { display: none !important; } /* Ẩn giao diện thô mặc định của thư viện */
-    
+    .leaflet-routing-container { display: none !important; }
     #route-summary-modal {
         position: absolute; top: 65px; left: 50%; transform: translateX(-50%); z-index: 2000;
         width: auto; max-width: 320px; background: rgba(255, 255, 255, 0.96); padding: 15px;
         border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); color: var(--text-color); font-size: 14px; text-align: center; border: 1px solid #ccc;
     }
-    #route-summary-modal h4 { margin-top: 0; margin-bottom: 10px; color: var(--primary-color); font-size: 1.1em; font-weight: bold; }
+    #route-summary-modal h4 { margin-top: 0; margin-bottom: 10px; color: var(--primary); font-size: 1.1em; font-weight: bold; }
     #route-summary-modal p { margin: 5px 0; font-weight: bold; }
     #route-summary-modal button { margin-top: 12px; padding: 6px 16px; background-color: var(--error-color); color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
 
     #directions-modal-content label { display: block; margin-top: 10px; font-weight: bold; text-align: left; }
     #directions-modal-content input[type="text"] { width: 100%; padding: 8px 12px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 20px; outline: none; font-size: 14px; }
-    #get-directions-btn { margin-top: 15px; padding: 10px 20px; background-color: var(--primary-color); color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; width: 100%; }
+    #get-directions-btn { margin-top: 15px; padding: 10px 20px; background-color: var(--primary); color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; width: 100%; }
+
+    /* Dropzone OCR Styles */
+    .dropzone { border: 2px dashed #dadce0; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; background: #fff; margin-top: 10px; }
+    .dropzone.dragover { border-color: var(--blue-maps); background-color: #e8f0fe; }
+    .dropzone p { color: #5f6368; font-size: 1rem; margin: 0; }
+    #previewContainer { margin-top: 15px; display: none; text-align: center; }
+    #previewImg { max-width: 100%; max-height: 180px; border-radius: 8px; border: 1px solid #dadce0; }
+    
+    .main-coord-box { background: #e8f0fe; padding: 15px; border-radius: 12px; text-align: center; margin-top: 15px; }
+    .coord-val { font-family: 'Consolas', monospace; font-size: 1.4rem; font-weight: bold; display: block; margin-bottom: 10px; color: #1a73e8; }
+    
+    .info-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid #dadce0; font-size: 13px; }
+    .info-table th, .info-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #dadce0; }
+    .info-table th { background: #f1f3f4; color: #5f6368; width: 30%; }
+    .info-table td { color: #202124; font-weight: 500; }
+    
+    .btn-ocr-group { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
+    .btn-action { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+    .btn-blue { background: var(--blue-maps); color: white; text-decoration: none; display: inline-block; line-height: 20px; }
+    .btn-gray { background: #5f6368; color: white; }
+    .btn-gray.copied { background: var(--success-color); }
+    #debugLog { display: none; }
 
     /* CHUẨN HÓA LỚP ĐỒ HỌA RADAR */
     .radar-contrast-layer { 
@@ -178,6 +201,9 @@
         <button id="directions-btn" title="Tìm đường đi">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.91V15h-2v4.91c-2.92-.58-5.36-2.67-6.52-5.41l1.54-.77C6.67 15.17 9.17 17 12 17s5.33-1.83 6.98-4.27l1.54.77c-1.16 2.74-3.6 4.83-6.52 5.41zM7.5 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm9 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
         </button>
+        <button id="image-ocr-btn" title="Trích xuất tọa độ từ ảnh Timemark">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+        </button>
         <a href="#" id="upload-kmz-btn" title="Tải lên tệp KML hoặc KMZ">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
         </a>
@@ -233,6 +259,50 @@
       </div>
   </div>
 
+  <div id="ocr-modal" class="modal-overlay">
+      <div class="modal-content" style="max-width: 480px;">
+          <button class="modal-close-btn" onclick="toggleOcrModal(false)">×</button>
+          <h3>Trích xuất ảnh Timemark</h3>
+          
+          <div class="dropzone" id="dropzone">
+              <p>Thả ảnh Timemark vào đây hoặc nhấp để chọn</p>
+              <input type="file" id="fileInput" accept="image/*" style="display:none">
+          </div>
+
+          <div id="ocrResultSection" style="display:none;">
+              <div class="main-coord-box">
+                  <span id="displayCoords" class="coord-val"></span>
+                  <div class="btn-ocr-group">
+                      <button id="copyCoordsBtn" class="btn-action btn-gray">Sao chép tọa độ</button>
+                      <a id="mapsLink" href="#" target="_blank" class="btn-action btn-blue">Google Maps</a>
+                  </div>
+              </div>
+
+              <table class="info-table">
+                  <tr>
+                      <th>Thời gian</th>
+                      <td id="attr-time">-</td>
+                  </tr>
+                  <tr>
+                      <th>Ngày tháng</th>
+                      <td id="attr-date">-</td>
+                  </tr>
+                  <tr>
+                      <th>Địa chỉ</th>
+                      <td id="attr-address">-</td>
+                  </tr>
+                  <tr>
+                      <th>Tọa độ GPS</th>
+                      <td id="attr-gps">-</td>
+                  </tr>
+              </table>
+          </div>
+          <div class="modal-footer">
+              <button class="btn-action btn-gray" onclick="toggleOcrModal(false)" style="border-radius:20px;">Đóng</button>
+          </div>
+      </div>
+  </div>
+
   <div id="donate-modal" class="modal-overlay">
       <div class="modal-content donate-modal-content">
           <button class="modal-close-btn" onclick="document.getElementById('donate-modal').classList.remove('visible')">×</button>
@@ -247,6 +317,7 @@
   </div>
 
   <div id="toast-notification"></div>
+  <canvas id="helperCanvas" style="display:none;"></canvas>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
@@ -258,7 +329,7 @@
   
   <script>
     const appState = {
-      map: null, rainLayer: null, searchMarker: null, timelines: [],
+      map: null, rainLayer: null, searchMarker: null, ocrMarker: null, timelines: [],
       lastRainData: null, lastWeatherData: null, animationInterval: null,
       kmzIndividualLayers: [],
       routingControl: null, userGPSPosition: null,
@@ -341,11 +412,14 @@
 
     function toggleDirectionsModal(show) {
         const modal = document.getElementById('directions-modal');
-        if (show) {
-            modal.classList.add('visible');
-        } else {
-            modal.classList.remove('visible');
-        }
+        if (show) modal.classList.add('visible');
+        else modal.classList.remove('visible');
+    }
+
+    function toggleOcrModal(show) {
+        const modal = document.getElementById('ocr-modal');
+        if (show) modal.classList.add('visible');
+        else modal.classList.remove('visible');
     }
 
     function preFillDirectionsInput() {
@@ -437,6 +511,131 @@
         } catch(e) { 
             showToast("Lỗi phân tích hoặc định vị địa chỉ tuyến đường.", "error"); 
             toggleLoading(false); 
+        }
+    }
+
+    // Xử lý kéo thả hình ảnh OCR
+    function initDropzone() {
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+            document.body.addEventListener(e, (evt) => { evt.preventDefault(); evt.stopPropagation(); });
+        });
+
+        dropzone.addEventListener('dragover', () => dropzone.classList.add('dragover'));
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+        
+        dropzone.addEventListener('drop', (e) => {
+            dropzone.classList.remove('dragover');
+            if (e.dataTransfer.files[0]) handleOcrFile(e.dataTransfer.files[0]);
+        });
+
+        dropzone.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => handleOcrFile(e.target.files[0]);
+    }
+
+    function handleOcrFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        document.getElementById('ocrResultSection').style.display = 'none';
+        toggleLoading(true);
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            processOcrImage(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function processOcrImage(imageSrc) {
+        const img = new Image();
+        img.onload = async function() {
+            const canvas = document.getElementById('helperCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                let avg = (data[i] + data[i+1] + data[i+2]) / 3;
+                let v = (avg > 185) ? 255 : 0; 
+                data[i] = data[i+1] = data[i+2] = v;
+            }
+            ctx.putImageData(imageData, 0, 0);
+
+            try {
+                const worker = await Tesseract.createWorker(['vie', 'eng']);
+                const { data: { text } } = await worker.recognize(canvas.toDataURL());
+                parseOcrData(text);
+                await worker.terminate();
+            } catch (err) {
+                showToast("Lỗi khi quét cấu trúc OCR hình ảnh.", "error");
+            } finally {
+                toggleLoading(false);
+            }
+        };
+        img.src = imageSrc;
+    }
+
+    function parseOcrData(rawText) {
+        const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+        const cleanText = rawText.replace(/,/g, '.');
+
+        const latMatch = cleanText.match(/(\d{1,2}\.\d{4,})\s?[°o0\*]?\s?N/i);
+        const lngMatch = cleanText.match(/(\d{2,3}\.\d{4,})\s?[°o0\*]?\s?E/i);
+        const timeMatch = rawText.match(/\b\d{1,2}:\d{2}\b/);
+        const dateMatch = rawText.match(/\d{1,2}\s+(Tháng|tháng)\s+\d{1,2},\s+\d{4}/i);
+
+        if (latMatch && lngMatch) {
+            const lat = parseFloat(latMatch[1]);
+            const lng = parseFloat(lngMatch[1]);
+            const coordsStr = `${lat}, ${lng}`;
+
+            document.getElementById('displayCoords').innerText = coordsStr;
+            document.getElementById('mapsLink').href = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+
+            document.getElementById('attr-gps').innerText = `${lat}°N, ${lng}°E`;
+            document.getElementById('attr-time').innerText = timeMatch ? timeMatch[0] : "Không xác định";
+            document.getElementById('attr-date').innerText = dateMatch ? dateMatch[0] : "Không xác định";
+
+            let addressText = "Không tìm thấy địa chỉ cụ thể";
+            const coordLineIdx = lines.findIndex(l => l.includes(latMatch[1].substring(0,5)));
+            if (coordLineIdx > 0) {
+                addressText = lines[coordLineIdx - 1];
+            }
+            document.getElementById('attr-address').innerText = addressText;
+
+            document.getElementById('ocrResultSection').style.display = 'block';
+
+            // Ghim điểm lên bản đồ Leaflet bằng Marker màu Cam độc lập
+            if (appState.ocrMarker) appState.map.removeLayer(appState.ocrMarker);
+            
+            const ocrIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            });
+
+            const popupContent = `
+                <div style="font-size:13px; line-height:1.4;">
+                    <b style="color:#e67e05;">📍 Điểm trích xuất từ ảnh:</b><br>
+                    <b>Địa chỉ:</b> ${addressText}<br>
+                    <b>Thời gian:</b> ${timeMatch ? timeMatch[0] : '-'}<br>
+                    <b>Ngày:</b> ${dateMatch ? dateMatch[0] : '-'}<br>
+                    <b>Tọa độ:</b> ${coordsStr}
+                </div>
+            `;
+
+            appState.ocrMarker = L.marker([lat, lng], { icon: ocrIcon }).addTo(appState.map).bindPopup(popupContent).openPopup();
+            appState.map.flyTo([lat, lng], 14, { animate: true, duration: 1.5 });
+            
+            // Đóng Modal để người dùng quan sát bản đồ
+            setTimeout(() => { toggleOcrModal(false); }, 800);
+            showToast("Đã trích xuất dữ liệu và ghim điểm lên bản đồ!", "success");
+        } else {
+            alert("Không tìm thấy tọa độ GPS. Vui lòng sử dụng ảnh chụp chứa dấu mốc rõ nét hơn.");
         }
     }
 
@@ -780,6 +979,7 @@
         initializeMap();
         updateRainLayer();
         updateWeatherTicker([]);
+        initDropzone();
         
         $('#info-btn').click(() => { $('#agro-info-panel').hide(); $('#agro-assistant-btn').removeClass('btn-active'); $('#weather-info').toggleClass('hidden'); $('#info-btn').toggleClass('btn-active'); });
         $('#legend-btn').click(toggleLegend);
@@ -796,6 +996,23 @@
             toggleDirectionsModal(true);
         });
         $('#get-directions-btn').click(getDirections);
+
+        $('#image-ocr-btn').click((e) => {
+            e.preventDefault();
+            toggleOcrModal(true);
+        });
+
+        $('#copyCoordsBtn').click(() => {
+            const text = document.getElementById('displayCoords').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                $('#copyCoordsBtn').innerText = "Đã sao chép!";
+                $('#copyCoordsBtn').addClass('copied');
+                setTimeout(() => {
+                    $('#copyCoordsBtn').innerText = "Sao chép tọa độ";
+                    $('#copyCoordsBtn').removeClass('copied');
+                }, 2000);
+            });
+        });
 
         $('#play-pause-btn').click(function() {
             if (appState.animationInterval) stopAnimation();
