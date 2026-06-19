@@ -39,6 +39,11 @@
             margin: 0;
         }
         
+        /* Hiệu chỉnh vị trí hộp Layer control (mặc định bên phải) tịnh tiến xuống dưới tránh đè ô tìm kiếm */
+        .leaflet-top.leaflet-right {
+            top: 75px !important;
+        }
+        
         /* Giao diện thanh tìm kiếm phía trên thông minh */
         #search-ui-container { 
             position: absolute; 
@@ -315,6 +320,9 @@
         
         /* TOÀN DIỆN DI ĐỘNG (MOBILE OPTIMIZATION) */
         @media (max-width: 767px) {
+            .leaflet-top.leaflet-right { 
+                top: 65px !important; 
+            }
             #search-ui-container { top: 12px; padding: 2px 6px; width: 92%; }
             #search-ui-container input { padding: 6px 2px 6px 6px; font-size: 13px; }
             #search-button { padding: 6px 14px; font-size: 12px; }
@@ -627,7 +635,6 @@
           document.getElementById('info-btn').classList.add('btn-active');
           
           try {
-            // Đảm bảo truyền tham số lat, lng nguyên gốc có đầy đủ độ chính xác cao vào URL API
             const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${extState.openWeatherApiKey}&units=metric&lang=vi&cnt=40`;
             const forecastResponse = await fetch(forecastUrl);
             const forecastData = await forecastResponse.json();
@@ -699,7 +706,6 @@
             document.getElementById('weather-info').innerHTML = weatherHTML;
         }
 
-        // Kích hoạt xem thời tiết khi Click chuột trực tiếp vào Bản đồ nền (Bảo toàn 7 số lẻ)
         map.on('click', async (e) => {
             const latlng = e.latlng;
             toggleLoading(true);
@@ -723,13 +729,11 @@
             getWeather(latlng.lat, latlng.lng, locationName);
         });
 
-        // --- ĐỒNG BỘ SỰ KIỆN COFFEE & DONATE MODAL ---
         $('#donate-btn').click(function(e) {
             e.preventDefault();
             document.getElementById('donate-modal').classList.add('visible');
         });
 
-        // --- ĐỒNG BỘ NÚT XÓA NHANH TRÊN THANH UI ---
         $('#search-input').on('input', function() {
             $('#main-search-clear').toggle($(this).val().length > 0);
         });
@@ -759,7 +763,6 @@
             showToast("Đã giải phóng tuyến lộ trình", "success");
         });
 
-        // --- BÓC TÁCH CHUỖI TOẠ ĐỘ PHỨC TẠP (Nâng cấp độ chính xác Regex lấy full số lẻ) ---
         function parseDMSToDD(dmsStr) {
             const dmsRegex = /(\d{1,3})\s*[°ºo0\*]?\s*(\d{1,2})\s*['’`]?\s*(\d{1,2}(?:\.\d+)?)\s*["”]?\s*([NSEW])/gi;
             let matches = []; let match;
@@ -781,7 +784,6 @@
             return null;
         }
 
-        // --- XỬ LÝ TÌM KIẾM ĐA PHƯƠNG THỨC & GỌI WEATHER (Bảo toàn vị trí gốc 7 số lẻ) ---
         async function execAddressSearch() {
             const query = document.getElementById('search-input').value.trim();
             if (!query) return;
@@ -828,7 +830,6 @@
         $('#search-button').click(debounce(execAddressSearch, 300));
         $('#search-input').keypress((e) => { if (e.key === 'Enter') debounce(execAddressSearch, 300)(); });
 
-        // --- ĐỊNH VỊ GPS HIỆN TẠI & GỌI WEATHER (Bảo toàn vị trí gốc 7 số lẻ) ---
         $('#custom-locate-btn').click(function(e) {
             e.preventDefault();
             if (!navigator.geolocation) { showToast("Trình duyệt không hỗ trợ định vị.", "error"); return; }
@@ -850,7 +851,6 @@
             );
         });
 
-        // --- ROUTING ĐƯỜNG ĐI ---
         $('#custom-directions-btn').click(function(e) { e.preventDefault(); if (extState.userGPSPosition) document.getElementById('directions-start-input').value = 'Vị trí của tôi'; toggleDirectionsModal(true); });
         $('#get-directions-btn').click(async function() {
             if (extState.routingControl) { map.removeControl(extState.routingControl); extState.routingControl = null; }
@@ -889,7 +889,6 @@
             } catch(err) { showToast("Lỗi phân tích cú pháp địa điểm.", "error"); toggleLoading(false); }
         });
 
-        // --- TRÍCH XUẤT ẢNH HIỆN TRƯỜNG OCR (Tối ưu hóa Regex trích xuất và hiển thị chuẩn xác 7 số lẻ) ---
         $('#custom-image-ocr-btn').click((e) => { e.preventDefault(); toggleOcrModal(true); });
         const dropzone = document.getElementById('dropzone'); const fileInput = document.getElementById('fileInput');
         dropzone.onclick = () => fileInput.click();
@@ -929,13 +928,11 @@
 
         function parseAndDisplayOcr(rawText) {
             const cleanText = rawText.replace(/,/g, '.');
-            // Regex lấy chuỗi số thập phân dài tối đa từ ảnh mốc hiện trường
             const latMatch = cleanText.match(/(\d{1,2}\.\d{4,10})\s?[°o0\*]?\s?N/i);
             const lngMatch = cleanText.match(/(\d{2,3}\.\d{4,10})\s?[°o0\*]?\s?E/i);
             
             if (latMatch && lngMatch) {
                 const lat = parseFloat(latMatch[1]); const lng = parseFloat(lngMatch[1]); 
-                // Định dạng hiển thị chính xác tuyệt đối 7 chữ số sau dấu phẩy để bảo toàn vị trí gốc
                 const coordsStr = `${lat .toFixed(11)}, ${lng .toFixed(11)}`;
                 
                 document.getElementById('displayCoords').innerText = coordsStr;
@@ -1001,7 +998,7 @@
                 'MarketNight': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
                 'Noi mua sam': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
                 'Homestay': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
-                'Nha nghi': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+                'Nha nghi': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/orange.png',
                 'Hotel': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
                 'NhaGa': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-darkred.png',
                 'SanBay': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-darkred.png',
